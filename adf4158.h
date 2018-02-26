@@ -7,17 +7,18 @@
 
 // Register Mapping
 // General 
-#define FRAC         0           // 25-bit fractional divder
-
 #define NBITS_MASK(X)   ((0x00000001u << X) - 1)
+
+#define FRAC         (uint32) 7743330    // 25-bit fractional divder
 
 // R0
 #define MUXOUT       (uint32) 0xE        // RTFM
-#define INT          (uint32) 225        // Integer-N divisor
-#define FRAC_MSB     (uint32) 0          // 12-bit
+#define INT          (uint32) 94         // Integer-N divisor
+#define FRAC_MSB     (uint32) ((FRAC >> 13) & NBITS_MASK(12))        
 
 // R1
-#define FRAC_LSB     (uint32) 0          // 13-bit
+
+#define FRAC_LSB     (uint32) (FRAC & NBITS_MASK(13))     
 
 // R2
 #define CSR_EN       (uint32) 0          // Cycle Slip Reduction
@@ -25,8 +26,8 @@
 #define PRESCALER    (uint32) 0          // RTFM
 #define REF_HALF     (uint32) 0          // Halve incoming refrence signal
 #define REF_X2       (uint32) 0          // Double incoming refrence signal
-#define RDIV         (uint32) 16         // Divide R by
-#define CLK1_DIV     (uint32) 251        // 12-bit clock 1 divisor word
+#define RDIV         (uint32) 1          // Divide R by
+#define CLK1_DIV     (uint32) 4          // 12-bit clock 1 divisor word
 
 // R3
 #define NSEL         (uint32) 0          // RTFM
@@ -35,7 +36,7 @@
 #define PSK_EN       (uint32) 0          // Phase-shift keying 
 #define FSK_EN       (uint32) 0          // Frequency-shift keying
 #define LPD          (uint32) 0          // Lock detect precision
-#define PD_POLARITY  (uint32) 0          // Phase detector polarity
+#define PD_POLARITY  (uint32) 1          // Phase detector polarity
 #define POWER_DN     (uint32) 0          // Programable power-down
 #define CP_3S        (uint32) 0          // Charge pump 3 state
 #define C_RESET      (uint32) 0          // RF counter reset
@@ -45,8 +46,8 @@
 #define SD_MODE      (uint32) 0          // Sigma-delta modulator mode
 #define NB_CURRENT   (uint32) 0          // Negative bleed current
 #define RB_MUXOUT    (uint32) 0          // Readback to MUXOUT
-#define CLK_DIVM     (uint32) 0          // Clock divider mode
-#define CLK2_DIV     (uint32) 0          // S12-bit clock 2 divisor word
+#define CLK_DIVM     (uint32) 3          // Clock divider mode
+#define CLK2_DIV     (uint32) 2          // S12-bit clock 2 divisor word
 
 // R5
 #define TX_CLK       (uint32) 0          // TX clock selection
@@ -55,22 +56,22 @@
 #define FSK_RAMP_EN  (uint32) 0          // FSK Ramp enable
 #define RAMP2_EN     (uint32) 0          // Ramp 2 enable
 #define DEV_SEL      (uint32) 0          // Deviation select
-#define DEV_OFFSET   (uint32) 0          // 4-bit Deviation offset word
-#define DEV_WORD     (uint32) 0          // 16-bit deviation word
+#define DEV_OFFSET   (uint32) 1          // 4-bit Deviation offset word
+#define DEV_WORD     (uint32) 2048       // 16-bit deviation word
 
 
 // R6
 #define STEP_SEL     (uint32) 0          // Step selection
-#define STEP         (uint32) 1          // 20-bit step word
+#define STEP         (uint32) 32000      // 20-bit step word
 
 // R7
 #define RAMPD_FL     (uint32) 0          // Rampdelay fast-lock
 #define RAMPD        (uint32) 0          // Ramp delay
 #define DELAY_CS     (uint32) 0          // Ramp delay clock-selet
 #define DELAY_SE     (uint32) 0          // Delay start enable
-#define DELAY        (uint32) 1          // 12-bit delay start word
+#define DELAY        (uint32) 0xa5a      // 12-bit delay start word
 
-// Register bitstream generartion
+// Register bitstream generation
 #define ADF4158_R0   (((NBITS_MASK(4) & MUXOUT) << 27) | \
                       ((NBITS_MASK(12) & INT) << 15) | \
                       ((NBITS_MASK(12) & FRAC_MSB) << 3) | \
