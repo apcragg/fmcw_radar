@@ -9,11 +9,12 @@
 // General 
 #define NBITS_MASK(X)   ((0x00000001u << X) - 1)
 
-#define FRAC         (uint32) 7743330    // 25-bit fractional divder
+#define FRAC         (uint32) 11614996   // 25-bit fractional divder
 
 // R0
-#define MUXOUT       (uint32) 0xE        // RTFM
-#define INT          (uint32) 94         // Integer-N divisor
+#define RAMP_ON      (uint32) 0          // Enable ramp
+#define MUXOUT       (uint32) 0x6        // RTFM
+#define INT          (uint32) 91         // Integer-N divisor
 #define FRAC_MSB     (uint32) ((FRAC >> 13) & NBITS_MASK(12))        
 
 // R1
@@ -21,17 +22,17 @@
 #define FRAC_LSB     (uint32) (FRAC & NBITS_MASK(13))     
 
 // R2
-#define CSR_EN       (uint32) 0          // Cycle Slip Reduction
+#define CSR_EN       (uint32) 1          // Cycle Slip Reduction
 #define CP_CURRENT   (uint32) 0xF        // Full scale is 0.31mA -> 5.0mA
 #define PRESCALER    (uint32) 0          // RTFM
 #define REF_HALF     (uint32) 0          // Halve incoming refrence signal
 #define REF_X2       (uint32) 0          // Double incoming refrence signal
 #define RDIV         (uint32) 1          // Divide R by
-#define CLK1_DIV     (uint32) 4          // 12-bit clock 1 divisor word
+#define CLK1_DIV     (uint32) 8          // 12-bit clock 1 divisor word
 
 // R3
 #define NSEL         (uint32) 0          // RTFM
-#define SD_RESET     (uint32) 0          // Delta-Sigma reset on write to R0
+#define SD_RESET     (uint32) 1          // Delta-Sigma reset on write to R0
 #define RAMP_MODE    (uint32) 0          // Generated ramp type
 #define PSK_EN       (uint32) 0          // Phase-shift keying 
 #define FSK_EN       (uint32) 0          // Frequency-shift keying
@@ -47,7 +48,7 @@
 #define NB_CURRENT   (uint32) 0          // Negative bleed current
 #define RB_MUXOUT    (uint32) 0          // Readback to MUXOUT
 #define CLK_DIVM     (uint32) 3          // Clock divider mode
-#define CLK2_DIV     (uint32) 2          // S12-bit clock 2 divisor word
+#define CLK2_DIV     (uint32) 1          // S12-bit clock 2 divisor word
 
 // R5
 #define TX_CLK       (uint32) 0          // TX clock selection
@@ -57,22 +58,23 @@
 #define RAMP2_EN     (uint32) 0          // Ramp 2 enable
 #define DEV_SEL      (uint32) 0          // Deviation select
 #define DEV_OFFSET   (uint32) 1          // 4-bit Deviation offset word
-#define DEV_WORD     (uint32) 2048       // 16-bit deviation word
+#define DEV_WORD     (uint32) 4096       // 16-bit deviation word
 
 
 // R6
 #define STEP_SEL     (uint32) 0          // Step selection
-#define STEP         (uint32) 32000      // 20-bit step word
+#define STEP         (uint32) 31508      // 20-bit step word
 
 // R7
-#define RAMPD_FL     (uint32) 0          // Rampdelay fast-lock
+#define RAMPD_FL     (uint32) 0          // Ramp delay fast-lock
 #define RAMPD        (uint32) 0          // Ramp delay
 #define DELAY_CS     (uint32) 0          // Ramp delay clock-selet
 #define DELAY_SE     (uint32) 0          // Delay start enable
-#define DELAY        (uint32) 0xa5a      // 12-bit delay start word
+#define DELAY        (uint32) 0          // 12-bit delay start word
 
 // Register bitstream generation
-#define ADF4158_R0   (((NBITS_MASK(4) & MUXOUT) << 27) | \
+#define ADF4158_R0   (((NBITS_MASK(1) & RAMP_ON) << 31) | \
+                      ((NBITS_MASK(4) & MUXOUT) << 27) | \
                       ((NBITS_MASK(12) & INT) << 15) | \
                       ((NBITS_MASK(12) & FRAC_MSB) << 3) | \
                       ((NBITS_MASK(3) & 0x0) << 0) \
@@ -98,32 +100,32 @@
                       ((NBITS_MASK(1) & PSK_EN) << 9) | \
                       ((NBITS_MASK(1) & FSK_EN) << 8) | \
                       ((NBITS_MASK(1) & LPD) << 7) | \
-                      ((NBITS_MASK(1) & LPD) << 6) | \
+                      ((NBITS_MASK(1) & PD_POLARITY) << 6) | \
                       ((NBITS_MASK(1) & POWER_DN) << 5) | \
                       ((NBITS_MASK(1) & CP_3S) << 4) | \
                       ((NBITS_MASK(1) & C_RESET) << 3) | \
                       ((NBITS_MASK(3) & 0x3) << 0) \
                      )
 
-#define ADF4158_R4   (((NBITS_MASK(1) & NSEL) << 31) | \
-                      ((NBITS_MASK(5) & SD_RESET) << 26) | \
-                      ((NBITS_MASK(2) & RAMP_MODE) << 23) | \
-                      ((NBITS_MASK(2) & PSK_EN) << 21) | \
-                      ((NBITS_MASK(2) & FSK_EN) << 19) | \
-                      ((NBITS_MASK(12) & LPD) << 7) | \
+#define ADF4158_R4   (((NBITS_MASK(1) & LE_SEL) << 31) | \
+                      ((NBITS_MASK(5) & SD_MODE) << 26) | \
+                      ((NBITS_MASK(2) & NB_CURRENT) << 23) | \
+                      ((NBITS_MASK(2) & RB_MUXOUT) << 21) | \
+                      ((NBITS_MASK(2) & CLK_DIVM) << 19) | \
+                      ((NBITS_MASK(12) & CLK2_DIV) << 7) | \
                       ((NBITS_MASK(3) & 0x4) << 0) \
                      )
 
 // Shift DEVIATION in parts because 16 bits is not < 16 bit system word
-#define ADF4158_R5   (((NBITS_MASK(1) & NSEL) << 29) | \
-                      ((NBITS_MASK(1) & SD_RESET) << 28) | \
-                      ((NBITS_MASK(2) & RAMP_MODE) << 26) | \
-                      ((NBITS_MASK(1) & PSK_EN) << 25) | \
-                      ((NBITS_MASK(1) & FSK_EN) << 24) | \
-                      ((NBITS_MASK(1) & LPD) << 23) | \
-                      ((NBITS_MASK(4) & LPD) << 9) | \
-                      ((NBITS_MASK(15) & (POWER_DN >> 1)) << 4) | \
-                      ((NBITS_MASK(1) & POWER_DN) << 3) | \
+#define ADF4158_R5   (((NBITS_MASK(1) & TX_CLK) << 29) | \
+                      ((NBITS_MASK(1) & PAR_RAMP) << 28) | \
+                      ((NBITS_MASK(2) & RB_INTERRUPT) << 26) | \
+                      ((NBITS_MASK(1) & FSK_RAMP_EN) << 25) | \
+                      ((NBITS_MASK(1) & RAMP2_EN) << 24) | \
+                      ((NBITS_MASK(1) & DEV_SEL) << 23) | \
+                      ((NBITS_MASK(4) & DEV_OFFSET) << 19) | \
+                      ((NBITS_MASK(15) & (DEV_WORD >> 1)) << 4) | \
+                      ((NBITS_MASK(1) & (DEV_WORD)) << 3) | \
                       ((NBITS_MASK(3) & 0x5) << 0) \
                      )
 

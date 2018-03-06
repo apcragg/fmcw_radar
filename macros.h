@@ -27,6 +27,6 @@ typedef unsigned long uint32;
 #define LE           0x24 // P1.2 & P1.5 - 0x04 + 0x20
 
 // Timers
-#define TA0_FREQ     200 // Close-ish to 9600 baud (417)
+#define TA0_FREQ     417 // Close-ish to 9600 baud (417)
 
 #endif

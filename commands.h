@@ -15,6 +15,7 @@
     static uint8 clk_state = 0;
     static uint8 cur_bit = 0;
     static uint8 cur_reg = 0;
+    static uint8 done = 0;
     static uint32 adf4158_cmds[] = {ADF4158_R7,
                                     ADF4158_R6,
                                     ADF4158_R5,
